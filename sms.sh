@@ -96,7 +96,6 @@ case "$1" in
 
 		for a in `cat $tmpfile`
 		do
-			echo delsms $a
 			delsms $a
 		done
 		rm -f $tmpfile
