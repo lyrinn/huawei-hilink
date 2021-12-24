@@ -16,6 +16,7 @@ Add these lines in your favourite cron file (ex: /etc/cron.d/modem)
 ```
 @reboot * * * * root /opt/admin/modem/cron.sh >/dev/null 2>&1
 30 * * * * root /opt/admin/modem/cron.sh >/dev/null 2>&1
+0 */6 * * * root /opt/admin/modem/sms.sh deleteout >/dev/null 2>&1
 ```
 
 For Jeedom SMS reading, just modify `parse-xml.pl` file.

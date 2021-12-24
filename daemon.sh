@@ -12,6 +12,6 @@ while [ 1 ]
 do
 	/opt/admin/modem/sms.sh readinbox > $tmpfile
 	/opt/admin/modem/parse-xml.pl $tmpfile
-	/opt/admin/modem/sms.sh deletein
+
 	sleep ${waitfor}
 done

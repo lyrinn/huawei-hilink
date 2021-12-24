@@ -30,7 +30,7 @@ delsms () {
 
 readinbox() {
 	token
-	DATA='<?xml version="1.0" encoding="UTF-8"?><request><PageIndex>1</PageIndex><ReadCount>20</ReadCount><BoxType>1</BoxType><SortType>0</SortType><Ascending>0</Ascending><UnreadPreferred>0</UnreadPreferred></request>'
+	DATA='<?xml version="1.0" encoding="UTF-8"?><request><PageIndex>1</PageIndex><ReadCount>20</ReadCount><BoxType>1</BoxType><SortType>0</SortType><Ascending>1</Ascending><UnreadPreferred>0</UnreadPreferred></request>'
 	curl -s 'http://192.168.8.1/api/sms/sms-list' -H "__RequestVerificationToken: $TOKEN" --data "$DATA" --compressed
 }
 
@@ -80,7 +80,7 @@ plmn () {
 
 case "$1" in
 	deletein)
-		tmpfile=$(mktemp)
+		tmpfile=$(mktemp -p /tmp/jeedom)
 		readidxinbox >> $tmpfile
 
 		for a in `cat $tmpfile`
@@ -91,7 +91,7 @@ case "$1" in
 	;;
 
 	deleteout)
-		tmpfile=$(mktemp)
+		tmpfile=$(mktemp -p /tmp/jeedom)
 		readidxoutbox >> $tmpfile
 
 		for a in `cat $tmpfile`
@@ -99,6 +99,10 @@ case "$1" in
 			delsms $a
 		done
 		rm -f $tmpfile
+	;;
+
+	delsms)
+		delsms $2
 	;;
 
 	readinbox)
