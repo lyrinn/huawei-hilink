@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use POSIX qw(strftime);
+
 use 5.010;
 use strict;
 use warnings;
@@ -15,6 +17,7 @@ if ($#ARGV != 0) {
 my $filename = $ARGV[0];
 my $dom = XML::LibXML->load_xml(location => $filename);
 my $counter = 0;
+my $thedate = "";
 
 # allowed numbers
 my @contacts = ("+336xxxxxxxx", "+336yyyyyyyy");
@@ -58,11 +61,19 @@ foreach my $sms ($dom->findnodes('//Message')) {
 		$smsmessage = uri_escape(lc($smsmessage));
 		$smsmessage =~ s/([^A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg;
 
+		# log
+		my $thedate = strftime "%Y-%m-%d %T", localtime;
+		open(FH, '>>', '/opt/admin/modem/log.txt');
+		print FH $thedate . " --- RECEIVED --- +" . $phonenum . " --- " . $smsmessage . "\n";
+		close(FH);
+
+		# if message is rebootmodem, do it
 		if ($sms->findvalue('./Content') eq 'rebootmodem') {
 			system("/opt/admin/modem/sms.sh deletein ; /opt/admin/modem/sms.sh rebootmodem ; /opt/admin/modem/kill.sh ; sleep 40 ; /opt/admin/modem/cron.sh");
 			exit;
 		}
 
+		# send command to Jeedom
 		my $push='https://jeedom-hostname/core/api/jeeApi.php?apikey=jeedomAPIkey&type=scenario&id=123456&action=start&tags=qui%3D' . $phonenum . '%20quoi%3D' . $smsmessage;
 		system("/usr/bin/curl -s '$push'");
 	}

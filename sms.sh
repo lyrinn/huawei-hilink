@@ -59,6 +59,14 @@ sendsms () {
 	SMS="<?xml version="1.0" encoding="UTF-8"?><request><Index>-1</Index><Phones><Phone>$NUMBER</Phone></Phones><Sca></Sca><Content>$TIME
 $MESSAGE</Content><Length>$LENGTH</Length><Reserved>1</Reserved><Date>$TIME</Date></request>"
 	curl -s 'http://192.168.8.1/api/sms/send-sms' -H "__RequestVerificationToken: $TOKEN" --data "$SMS" --compressed
+
+	if [ ! -f "${thedir}/log.txt" ]
+	then
+		touch ${thedir}/log.txt
+		chown root:root ${thedir}/log.txt
+		chmod 600 ${thedir}/log.txt
+	fi
+	echo "${TIME} --- SENT --- ${NUMBER} --- ${MESSAGE}" >> ${thedir}/log.txt
 }
 
 sendstatus () {
