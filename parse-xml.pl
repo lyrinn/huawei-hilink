@@ -62,7 +62,7 @@ foreach my $sms ($dom->findnodes('//Message')) {
 		$smsmessage =~ s/([^A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg;
 
 		# log
-		my $thedate = strftime "%Y-%m-%d %T", localtime;
+		$thedate = strftime "%Y-%m-%d %T", localtime;
 		open(FH, '>>', '/opt/admin/modem/log.txt');
 		print FH $thedate . " --- RECEIVED --- +" . $phonenum . " --- " . $smsmessage . "\n";
 		close(FH);
